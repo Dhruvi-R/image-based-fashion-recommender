@@ -19,7 +19,7 @@ model = tensorflow.keras.Sequential([
     GlobalMaxPooling2D()
 ])
 
-img = image.load_img('C:/Users/dhruv/Downloads/Fashion_Recommendation_of_Ajio/image_3.jpg',target_size=(224,224))
+img = image.load_img('image_3.jpg',target_size=(224,224))
 img_array = image.img_to_array(img)
 expanded_img_array = np.expand_dims(img_array, axis=0)
 preprocessed_img = preprocess_input(expanded_img_array)
@@ -37,4 +37,5 @@ for file in indices[0][1:6]:
     temp_img = cv2.imread(filenames[file])
     cv2.imshow('output',cv2.resize(temp_img,(512,512)))
     cv2.waitKey(0)
+
 

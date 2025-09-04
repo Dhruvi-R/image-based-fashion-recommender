@@ -10,9 +10,8 @@ from tensorflow.keras.models import Sequential
 from sklearn.neighbors import NearestNeighbors
 from numpy.linalg import norm
 
-# -----------------------
+
 # Load Model (Cached)
-# -----------------------
 @st.cache_resource
 def load_model():
     base_model = ResNet50(weights="imagenet", include_top=False, input_shape=(224,224,3))
@@ -21,9 +20,7 @@ def load_model():
 
 model = load_model()
 
-# -----------------------
 # Load Stored Embeddings
-# -----------------------
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 with open(os.path.join(BASE_DIR, "embeddings.pkl"), "rb") as f:
@@ -35,9 +32,8 @@ with open(os.path.join(BASE_DIR, "filenames.pkl"), "rb") as f:
 # Clean filenames to ensure they point inside ajio_images
 filenames = [os.path.join("ajio_images", os.path.basename(f)) for f in filenames]
 
-# -----------------------
+
 # Feature Extraction
-# -----------------------
 def extract_features(img_path, model):
     img = image.load_img(img_path, target_size=(224,224))
     img_array = image.img_to_array(img)
@@ -46,18 +42,15 @@ def extract_features(img_path, model):
     result = model.predict(preprocessed_img).flatten()
     return result / norm(result)
 
-# -----------------------
 # Recommend Function
-# -----------------------
 def recommend(features, feature_list, n_neighbors=5):
     neighbors = NearestNeighbors(n_neighbors=n_neighbors, algorithm="brute", metric="euclidean")
     neighbors.fit(feature_list)
     distances, indices = neighbors.kneighbors([features])
     return distances, indices
 
-# -----------------------
+
 # Streamlit UI
-# -----------------------
 st.subheader(" Fashion Recommendation System ")
 st.markdown("Upload a fashion product and get **similar style recommendations** ")
 
@@ -87,14 +80,4 @@ if uploaded_file is not None:
         else:
             col.warning(f"Missing: {img_path}")
 
-    # -----------------------
-    # "Accuracy" Metric (Cosine Similarity)
-    # -----------------------
-   # cosine_similarities = []
-    #for idx in indices[0][1:]:
-    #    rec_features = feature_list[idx]
-     #   cos_sim = np.dot(features, rec_features) / (norm(features) * norm(rec_features))
-     #   cosine_similarities.append(cos_sim)
 
-    #avg_similarity = np.mean(cosine_similarities)
-   # st.metric("Recommendation Accuracy (Avg. Cosine Similarity)", f"{avg_similarity:.2f}")

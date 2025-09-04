@@ -11,7 +11,7 @@ from sklearn.neighbors import NearestNeighbors
 from numpy.linalg import norm
 
 
-# Load Model (Cached)
+# Load Model
 @st.cache_resource
 def load_model():
     base_model = ResNet50(weights="imagenet", include_top=False, input_shape=(224,224,3))
@@ -79,5 +79,6 @@ if uploaded_file is not None:
             col.image(img_path, use_container_width=True)
         else:
             col.warning(f"Missing: {img_path}")
+
 
 
